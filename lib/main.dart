@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/game_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const SolitaireApp());
@@ -21,7 +21,7 @@ class SolitaireApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      home: const GameScreen(),
+      home: const HomeScreen(),
     );
   }
 }
