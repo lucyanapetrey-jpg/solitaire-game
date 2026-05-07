@@ -71,7 +71,7 @@ class Mission {
   final String description;
   final int reward;
   final int target;
-  Mission({
+  const Mission({
     required this.id,
     required this.title,
     required this.description,
