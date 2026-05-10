@@ -29,7 +29,7 @@ class GameCard {
     return faceUp &&
         other.faceUp &&
         other.suit.isRed != suit.isRed &&
-        other.rank == rank - 1;
+        other.rank == rank + 1;
   }
 
   bool canPlaceOnFoundation(GameCard? top) {
