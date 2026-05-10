@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../i18n/app_strings.dart';
+import '../services/audio_service.dart';
 import '../services/rewards_service.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/settings_dialog.dart';
@@ -68,7 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.settings, color: Color(0xFFFFD740), size: 28),
-                      onPressed: () => showDialog(context: context, builder: (_) => const SettingsDialog()),
+                      onPressed: () {
+                        AudioService().ensurePlaying();
+                        showDialog(context: context, builder: (_) => const SettingsDialog());
+                      },
                       tooltip: 'Settings',
                     ),
                     GestureDetector(
@@ -132,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icons.play_arrow,
                   const Color(0xFFFFAB00),
                   () async {
+                    AudioService().ensurePlaying();
                     await Navigator.push(context,
                         MaterialPageRoute(builder: (_) => const GameScreen()));
                     _refresh();
