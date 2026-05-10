@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../i18n/app_strings.dart';
 import '../services/rewards_service.dart';
 import '../widgets/banner_ad_widget.dart';
+import '../widgets/settings_dialog.dart';
 import 'daily_reward_screen.dart';
 import 'game_screen.dart';
 import 'missions_screen.dart';
@@ -43,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings.of(context);
     return Scaffold(
       bottomNavigationBar: const BannerAdWidget(),
       body: Container(
@@ -59,10 +62,15 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Top bar with diamonds
+                // Top bar with settings + diamonds
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    IconButton(
+                      icon: const Icon(Icons.settings, color: Color(0xFFFFD740), size: 28),
+                      onPressed: () => showDialog(context: context, builder: (_) => const SettingsDialog()),
+                      tooltip: 'Settings',
+                    ),
                     GestureDetector(
                       onTap: () async {
                         await Navigator.push(context,
@@ -99,10 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   shaderCallback: (r) => const LinearGradient(
                     colors: [Color(0xFFFFD740), Color(0xFFFFAB00)],
                   ).createShader(r),
-                  child: const Text(
-                    'SOLITAIRE',
+                  child: Text(
+                    s.solitaire.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
@@ -110,9 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                const Center(
-                  child: Text('KLONDIKE',
-                      style: TextStyle(
+                Center(
+                  child: Text(s.klondike,
+                      style: const TextStyle(
                           color: Colors.white60, fontSize: 14, letterSpacing: 8)),
                 ),
                 const SizedBox(height: 32),
@@ -120,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _CardStackPreview(),
                 const SizedBox(height: 32),
                 _bigButton(
-                  'JOACĂ',
+                  s.newGame,
                   Icons.play_arrow,
                   const Color(0xFFFFAB00),
                   () async {
@@ -134,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Expanded(
                       child: _smallButton(
-                        'Misiuni',
+                        s.missions,
                         Icons.flag,
                         const Color(0xFF8E24AA),
                         () async {
@@ -147,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _smallButton(
-                        'Magazin',
+                        s.shop,
                         Icons.shopping_cart,
                         const Color(0xFF1976D2),
                         () async {
@@ -163,8 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 FutureBuilder<int>(
                   future: _rewards.getCurrentStreak(),
                   builder: (c, snap) {
-                    final s = snap.data ?? 0;
-                    if (s == 0) return const SizedBox();
+                    final streakDays = snap.data ?? 0;
+                    if (streakDays == 0) return const SizedBox();
                     return Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -175,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           const Icon(Icons.local_fire_department, color: Color(0xFFFF6F00)),
                           const SizedBox(width: 8),
-                          Text('Streak: $s zile consecutive',
+                          Text(s.streak.replaceAll('{n}', '$streakDays'),
                               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
                         ],
                       ),
