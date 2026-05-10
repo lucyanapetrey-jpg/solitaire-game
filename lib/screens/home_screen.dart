@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/rewards_service.dart';
+import '../widgets/banner_ad_widget.dart';
 import 'daily_reward_screen.dart';
 import 'game_screen.dart';
 import 'missions_screen.dart';
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const BannerAdWidget(),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

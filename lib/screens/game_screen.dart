@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../game/card.dart';
 import '../game/klondike.dart';
+import '../services/ads_service.dart';
 import '../services/rewards_service.dart';
+import '../widgets/banner_ad_widget.dart';
 import 'shop_screen.dart';
 
 class GameScreen extends StatefulWidget {
@@ -120,7 +122,8 @@ class _GameScreenState extends State<GameScreen> {
         _missions.increment('no_undo_win');
       }
       _rewards.addDiamonds(20); // win bonus
-      Future.microtask(() {
+      Future.microtask(() async {
+        await AdsService.instance.maybeShowInterstitial();
         if (!mounted) return;
         showDialog(
           context: context,
@@ -283,6 +286,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const BannerAdWidget(),
       appBar: AppBar(
         title: Row(
           children: [
@@ -527,15 +531,17 @@ class _GameScreenState extends State<GameScreen> {
 
   Widget _draggableCard(List<GameCard> cards, double w, double h) {
     final top = cards.first;
+    final stackHeight = h + (cards.length - 1) * 26.0;
     return Draggable<List<GameCard>>(
       data: cards,
+      dragAnchorStrategy: pointerDragAnchorStrategy,
       feedback: Material(
         color: Colors.transparent,
         child: Opacity(
           opacity: 0.85,
           child: SizedBox(
             width: w,
-            height: h + (cards.length - 1) * 26,
+            height: stackHeight,
             child: Stack(
               children: [
                 for (var i = 0; i < cards.length; i++)
@@ -545,8 +551,9 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ),
       ),
-      childWhenDragging: SizedBox(width: w, height: h),
+      childWhenDragging: SizedBox(width: w, height: stackHeight),
       child: GestureDetector(
+        behavior: HitTestBehavior.deferToChild,
         onTap: () {
           _saveSnap();
           setState(() {
