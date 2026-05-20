@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'i18n/app_strings.dart';
@@ -10,7 +12,16 @@ import 'services/purchase_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocaleService().init();
-  await PurchaseService.instance.initialize();
+  await PurchaseService.instance.initialize();  if (Platform.isIOS) {
+    try {
+      final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+      if (status == TrackingStatus.notDetermined) {
+        await Future.delayed(const Duration(milliseconds: 200));
+        await AppTrackingTransparency.requestTrackingAuthorization();
+      }
+    } catch (_) {}
+  }
+
   AdsService.instance.initialize();
   AudioService().init();
   runApp(const SolitaireApp());
