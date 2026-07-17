@@ -1,7 +1,7 @@
 name: solitaire_game
 description: "Solitaire Summer - Klondike classic"
 publish_to: 'none'
-version: 2.3.1+18
+version: 2.3.3+23
 environment:
   sdk: ^3.11.1
 
@@ -12,9 +12,14 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.3.2
+  upgrader: ^11.4.0
+  in_app_review: ^2.0.9
   google_mobile_ads: ^5.3.1
   app_tracking_transparency: ^2.0.6+1
   in_app_purchase: ^3.2.0
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.9.4
+  flutter_timezone: ^3.0.1
   audioplayers: ^6.1.0
 
 dev_dependencies:

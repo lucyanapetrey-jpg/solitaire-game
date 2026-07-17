@@ -91,6 +91,36 @@ class _GameScreenState extends State<GameScreen> {
     HapticFeedback.lightImpact();
   }
 
+  Future<void> _undoViaAd() async {
+    if (_undoStack.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nimic de anulat')),
+      );
+      return;
+    }
+    final earned = await AdsService.instance.showRewarded();
+    if (!mounted) return;
+    if (earned) {
+      _undo();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reclama nu e disponibilă acum, încearcă din nou.')),
+      );
+    }
+  }
+
+  Future<void> _hintViaAd() async {
+    final earned = await AdsService.instance.showRewarded();
+    if (!mounted) return;
+    if (earned) {
+      _showHint();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reclama nu e disponibilă acum, încearcă din nou.')),
+      );
+    }
+  }
+
   void _onTapCard(GameCard card) {
     if (!_isTopOfPile(card)) return;
     _saveSnap();
@@ -303,6 +333,16 @@ class _GameScreenState extends State<GameScreen> {
         foregroundColor: Colors.white,
         actions: [
           IconButton(icon: const Icon(Icons.undo), onPressed: _undo),
+          IconButton(
+            tooltip: '♻️ Anulează ultima mutare (reclamă)',
+            icon: const Icon(Icons.replay),
+            onPressed: _undoViaAd,
+          ),
+          IconButton(
+            tooltip: '💡 Indiciu (reclamă)',
+            icon: const Icon(Icons.lightbulb_outline),
+            onPressed: _hintViaAd,
+          ),
           IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
